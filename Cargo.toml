@@ -1,0 +1,8 @@
+[package]
+name = "adb_manager"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+eframe = "0.24.1"
+egui = "0.24.1"
