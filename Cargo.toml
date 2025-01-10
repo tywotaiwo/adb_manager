@@ -2,19 +2,11 @@
 name = "adb_manager"
 version = "0.1.0"
 edition = "2021"
-authors = ["Your Name <your.email@example.com>"]
-description = "ADB Manager for connecting Android devices"
-homepage = "https://github.com/yourusername/adb_manager"
 
 [dependencies]
 eframe = { version = "0.24.1", features = ["default"] }
 egui = "0.24.1"
 
-[package.metadata.wix]
-upgrade-guid = "87654321-4321-4321-4321-210987654321"
-path-guid = "12345678-1234-1234-1234-123456789012"
-license = false
-eula = false
-
-[build-dependencies]
-winres = "0.1"
+[target.'cfg(windows)'.dependencies.winapi]
+version = "0.3.9"
+features = ["winuser", "windef"]
