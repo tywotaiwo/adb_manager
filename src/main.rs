@@ -1,11 +1,12 @@
 use eframe::egui;
 use egui::ViewportBuilder;
 mod tabs;
-use tabs::{ConnectTab, DevicesTab};
+use tabs::{ConnectTab, DevicesTab, ReverseTcpTab};
 
 struct AdbManagerApp {
     connect_tab: ConnectTab,
     devices_tab: DevicesTab,
+    reverse_tcp_tab: ReverseTcpTab,
     selected_tab: usize,
     status_message: String,
 }
@@ -15,6 +16,7 @@ impl Default for AdbManagerApp {
         Self {
             connect_tab: ConnectTab::default(),
             devices_tab: DevicesTab::default(),
+            reverse_tcp_tab: ReverseTcpTab::default(),
             selected_tab: 0,
             status_message: String::new(),
         }
@@ -32,6 +34,10 @@ impl eframe::App for AdbManagerApp {
                     self.selected_tab = 1;
                     self.devices_tab.refresh_devices();
                 }
+                if ui.selectable_label(self.selected_tab == 2, "Reverse TCP").clicked() {
+                    self.selected_tab = 2;
+                    self.reverse_tcp_tab.refresh_devices();
+                }
             });
         });
 
@@ -39,6 +45,7 @@ impl eframe::App for AdbManagerApp {
             if let Some(message) = match self.selected_tab {
                 0 => self.connect_tab.show(ui),
                 1 => self.devices_tab.show(ui),
+                2 => self.reverse_tcp_tab.show(ui),
                 _ => unreachable!(),
             } {
                 self.status_message = message;
