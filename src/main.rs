@@ -1,22 +1,27 @@
 use eframe::egui;
 use egui::ViewportBuilder;
+mod adb;
 mod tabs;
-use tabs::{ConnectTab, DevicesTab, ReverseTcpTab};
+use tabs::{ConnectTab, DevicesTab, ReverseTcpTab, FileManagerTab};
+use std::sync::Arc;
 
 struct AdbManagerApp {
     connect_tab: ConnectTab,
     devices_tab: DevicesTab,
     reverse_tcp_tab: ReverseTcpTab,
+    file_manager_tab: FileManagerTab,
     selected_tab: usize,
     status_message: String,
 }
 
 impl Default for AdbManagerApp {
     fn default() -> Self {
+        let adb_manager = Arc::new(adb::AdbManager::new());
         Self {
             connect_tab: ConnectTab::default(),
             devices_tab: DevicesTab::default(),
             reverse_tcp_tab: ReverseTcpTab::default(),
+            file_manager_tab: FileManagerTab::new(adb_manager),
             selected_tab: 0,
             status_message: String::new(),
         }
@@ -38,6 +43,9 @@ impl eframe::App for AdbManagerApp {
                     self.selected_tab = 2;
                     self.reverse_tcp_tab.refresh_devices();
                 }
+                if ui.selectable_label(self.selected_tab == 3, "File Manager").clicked() {
+                    self.selected_tab = 3;
+                }
             });
         });
 
@@ -46,6 +54,7 @@ impl eframe::App for AdbManagerApp {
                 0 => self.connect_tab.show(ui),
                 1 => self.devices_tab.show(ui),
                 2 => self.reverse_tcp_tab.show(ui),
+                3 => self.file_manager_tab.show(ui),
                 _ => unreachable!(),
             } {
                 self.status_message = message;
